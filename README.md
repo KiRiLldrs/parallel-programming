@@ -1,7 +1,5 @@
 # Лабораторная работа №1
 ## Штенгауэр Кирилл 6313
-### Описание файлов
-
 
 ### Описание компонентов
 
@@ -61,6 +59,7 @@ python checkMultiply.py data/matrix_a.txt data/matrix_b.txt data/matrix_res.txt
 **Запуск:**
 ```bash
 python plot_performance.py
+```
 
 
 
