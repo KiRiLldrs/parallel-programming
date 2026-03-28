@@ -61,6 +61,8 @@ python checkMultiply.py data/matrix_a.txt data/matrix_b.txt data/matrix_res.txt
 python plot_performance.py
 ```
 
+### `data/` — Содержит пример входных и выходной матриц
+
 
 
 
