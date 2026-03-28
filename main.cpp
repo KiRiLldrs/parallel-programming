@@ -5,6 +5,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <string>
+#include <omp.h>
 
 bool readMatrix(const std::string &filename, std::vector<double> &matrix, int &n)
 {
@@ -52,10 +53,13 @@ bool writeMatrix(const std::string &filename, std::vector<double> &matrix, int &
     return true;
 }
 
-void multiplyMatrices(const std::vector<double> &A, const std::vector<double> &B, std::vector<double> &C, int n)
+void multiplyMatrices(const std::vector<double> &A, const std::vector<double> &B, std::vector<double> &C, int n, int num_threads)
 {
     C.assign(n * n, 0.0);
+    omp_set_num_threads(num_threads);
 
+    // clang-format off
+    #pragma omp parallel for collapse(2)
     for (int i = 0; i < n; ++i)
     {
         for (int k = 0; k < n; ++k)
@@ -67,6 +71,7 @@ void multiplyMatrices(const std::vector<double> &A, const std::vector<double> &B
             }
         }
     }
+    // clang-format on
 }
 
 int main(int argc, char *argv[])
@@ -75,11 +80,18 @@ int main(int argc, char *argv[])
     std::string file_b = "data/matrix_b.txt";
     std::string result_file = "data/matrix_res.txt";
 
-    if (argc >= 4)
+    int num_threads = omp_get_max_threads();
+
+    if (argc >= 2)
     {
-        file_a = argv[1];
-        file_b = argv[2];
-        result_file = argv[3];
+        num_threads = std::atoi(argv[1]);
+    }
+
+    if (argc >= 5)
+    {
+        file_a = argv[2];
+        file_b = argv[3];
+        result_file = argv[4];
     }
 
     std::vector<double> A, B, C;
@@ -107,9 +119,14 @@ int main(int argc, char *argv[])
 
     int n = nA;
 
+    std::cout << "\n========== OPENMP INFO ==========" << std::endl;
+    std::cout << "Max threads: " << omp_get_max_threads() << std::endl;
+    std::cout << "Using threads: " << num_threads << std::endl;
+    std::cout << "=================================" << std::endl;
+
     // === Замер времени выполнения ===
     auto start = std::chrono::high_resolution_clock::now();
-    multiplyMatrices(A, B, C, n);
+    multiplyMatrices(A, B, C, n, num_threads);
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -133,6 +150,7 @@ int main(int argc, char *argv[])
     std::cout << "\n========== REPORT ==========" << std::endl;
     std::cout << "Matrix Size: " << n << "x" << n << std::endl;
     std::cout << "Execution Time (ms): " << time_ms << std::endl;
+    std::cout << "Threads used: " << num_threads << std::endl;
     std::cout << "Estimated FLOPs: " << flops << std::endl;
     std::cout << "Performance (GFLOPS): " << std::fixed << std::setprecision(2) << gflops << " GFLOPS" << std::endl;
 
