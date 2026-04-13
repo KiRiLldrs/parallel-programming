@@ -1,0 +1,4 @@
+Matrix Size: 1400x1400
+Processes: 8
+Execution Time (s): 0.437673
+Performance (GFLOPS): 12.5391
