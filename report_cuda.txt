@@ -1,0 +1,6 @@
+Matrix Size: 2048x2048
+Block Size: 32x32
+Shared Memory: Enabled
+Execution Time (ms): 316.818
+Estimated FLOPs: 17179869184
+Performance (GFLOPS): 54.23
