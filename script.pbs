@@ -5,4 +5,4 @@
 #SBATCH --partition batch
 
 module load intel/mpi4
-mpirun -r ssh ./matrix_mult
+mpirun -r ssh ./mpi_matrix
